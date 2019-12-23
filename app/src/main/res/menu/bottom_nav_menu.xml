@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/nav_stats"
-        android:icon="@drawable/ic_baseline_bar_chart_24"
-        android:title="Stats" />
+        android:id="@+id/nav_logs"
+        android:icon="@drawable/ic_baseline_format_list_bulleted_24"
+        android:title="Logs" />
 
     <item
         android:id="@+id/nav_home"
@@ -11,8 +11,7 @@
         android:title="Home" />
 
     <item
-        android:id="@+id/nav_logs"
-        android:icon="@drawable/ic_baseline_format_list_bulleted_24"
-        android:title="Logs" />
-
+        android:id="@+id/nav_stats"
+        android:icon="@drawable/ic_baseline_bar_chart_24"
+        android:title="Stats" />
 </menu>
