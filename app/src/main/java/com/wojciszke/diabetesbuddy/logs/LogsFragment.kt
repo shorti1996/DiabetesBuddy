@@ -1,15 +1,14 @@
 package com.wojciszke.diabetesbuddy.logs
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.wojciszke.diabetesbuddy.MainActivity
 import com.wojciszke.diabetesbuddy.R
-import com.wojciszke.diabetesbuddy.model.LogEntry
 import kotlinx.android.synthetic.main.fragment_logs.*
-import org.joda.time.DateTime
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -41,7 +40,7 @@ class LogsFragment : Fragment() {
         logs_rv.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(this@LogsFragment.requireContext())
-            adapter = LogsAdapter(dataset)
+            adapter = LogsAdapter(MainActivity.dataset)
         }
         super.onViewCreated(view, savedInstanceState)
     }
@@ -49,14 +48,6 @@ class LogsFragment : Fragment() {
     companion object {
 
         const val TAG = "logs_fragment"
-
-        val dataset = listOf(
-            LogEntry("1", 80, DateTime.now(), false, "Notatka"),
-            LogEntry("2", 142, DateTime.now().minusMinutes(10), true, ""),
-            LogEntry("3", 181, DateTime.now().minusDays(1).minusMinutes(21), true, "Notatka 123"),
-            LogEntry("4", 164, DateTime.now().minusDays(1).minusHours(2).minusMinutes(38), false, "Test"),
-            LogEntry("5", 94, DateTime.now().minusDays(2).minusHours(8).minusMinutes(23), false, "Test 2")
-        )
 
         /**
          * Use this factory method to create a new instance of
