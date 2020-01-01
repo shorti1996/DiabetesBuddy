@@ -1,4 +1,4 @@
-package com.wojciszke.diabetesbuddy.adding
+package com.wojciszke.diabetesbuddy.phototaking
 
 import android.content.Context
 import android.util.AttributeSet
