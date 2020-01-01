@@ -6,9 +6,10 @@
     tools:context=".logs.LogsFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/logs_rv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Logs" />
-
+        tools:listitem="@layout/log_entry_vh" />
 </FrameLayout>
