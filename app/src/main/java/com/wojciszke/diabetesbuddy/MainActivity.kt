@@ -2,7 +2,6 @@ package com.wojciszke.diabetesbuddy
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.wojciszke.diabetesbuddy.adding.AddingLogActivity
 import com.wojciszke.diabetesbuddy.boiler.inTransaction
@@ -13,9 +12,6 @@ import com.wojciszke.diabetesbuddy.phototaking.PhotoTakingActivity
 import com.wojciszke.diabetesbuddy.stats.StatsFragment
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fabs_leyout.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import org.joda.time.DateTime
 
 class MainActivity : AppCompatActivity() {
@@ -29,16 +25,16 @@ class MainActivity : AppCompatActivity() {
         fab_add.setOnClickListener { startActivity(Intent(this, AddingLogActivity::class.java)) }
         fab_photo.setOnClickListener { startActivity(Intent(this, PhotoTakingActivity::class.java)) }
 
-        CoroutineScope(Dispatchers.IO).launch {
-            val db = (application as DiabetesApp).db
-            db.clearAllTables()
-            with(db.userDao()) {
-                insertAll(*dataset.toTypedArray())
-                getAll().forEach {
-                    Log.d("debug-db", it.toString())
-                }
-            }
-        }
+//        CoroutineScope(Dispatchers.IO).launch {
+//            val db = (application as DiabetesApp).db
+//            db.clearAllTables()
+//            with(db.userDao()) {
+//                insertAll(*dataset.toTypedArray())
+//                getAll().forEach {
+//                    Log.d("debug-db", it.toString())
+//                }
+//            }
+//        }
     }
 
     private fun prepareBottomNav() {
@@ -63,7 +59,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun showLogs() {
         val fragment = supportFragmentManager.findFragmentByTag(LogsFragment.TAG)
-                ?: LogsFragment.newInstance("", "")
+                ?: LogsFragment.newInstance()
         supportFragmentManager.inTransaction {
             replace(R.id.main_root, fragment, LogsFragment.TAG)
         }

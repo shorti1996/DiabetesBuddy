@@ -1,5 +1,6 @@
 package com.wojciszke.diabetesbuddy.model
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 import org.joda.time.DateTime
 import java.util.*
@@ -18,18 +19,18 @@ import java.util.*
  */
 @Entity(tableName = "log_entries")
 data class LogEntry(
-        @PrimaryKey
-        val id: String,
-        val glucose: Int,
-        val date: DateTime,
-        val fasting: Boolean,
-        val note: String
+    @PrimaryKey
+    val id: String,
+    val glucose: Int,
+    val date: DateTime,
+    val fasting: Boolean,
+    val note: String
 ) {
     constructor(
-            glucose: Int,
-            date: DateTime,
-            fasting: Boolean,
-            note: String
+        glucose: Int,
+        date: DateTime,
+        fasting: Boolean,
+        note: String
     ) : this(UUID.randomUUID().toString(), glucose, date, fasting, note)
 }
 
@@ -54,21 +55,25 @@ private fun LogEntry.toGlucoseLevelFasting() = when {
 @Dao
 interface LogEntryDao {
     @Query("SELECT * FROM log_entries")
-    fun getAll(): List<LogEntry>
+    fun getAll(): LiveData<List<LogEntry>>
 
     @Query("SELECT * FROM log_entries WHERE id IN (:userIds)")
-    fun loadAllByIds(userIds: Array<String>): List<LogEntry>
+    fun loadAllByIds(userIds: Array<String>): LiveData<List<LogEntry>>
 
     /**
-     * @param start use [DateTime.toString] ("yyyy-mm-dd")
-     * @param end use [DateTime.toString] ("yyyy-mm-dd")
+     * @param start use [DateTime.toString] with [DATETIME_SERIALIZATION_STRING]
+     * @param end use [DateTime.toString] with [DATETIME_SERIALIZATION_STRING]
      */
     @Query("SELECT * FROM log_entries WHERE date BETWEEN DATE(:start) AND DATE(:end)")
-    fun findBetween(start: DateTime, end: DateTime): LogEntry
+    fun findBetween(start: String, end: String): LiveData<LogEntry>
 
     @Insert
     fun insertAll(vararg logEntries: LogEntry)
 
     @Delete
     fun delete(logEntry: LogEntry)
+
+    companion object {
+        const val DATETIME_SERIALIZATION_STRING = "yyyy-mm-dd"
+    }
 }
