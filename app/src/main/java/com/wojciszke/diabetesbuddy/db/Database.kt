@@ -12,7 +12,7 @@ import org.joda.time.DateTime
 @Database(entities = [LogEntry::class], version = 1)
 @TypeConverters(DiabetesAppTypeConverters::class)
 abstract class AppDatabase : RoomDatabase() {
-    abstract fun userDao(): LogEntryDao
+    abstract fun logEntryDao(): LogEntryDao
 
     companion object {
         const val DATABASE_NAME = "app-database"

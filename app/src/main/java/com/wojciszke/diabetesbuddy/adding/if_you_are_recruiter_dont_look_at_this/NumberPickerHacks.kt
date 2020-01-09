@@ -1,4 +1,4 @@
-package com.wojciszke.diabetesbuddy.adding
+package com.wojciszke.diabetesbuddy.adding.if_you_are_recruiter_dont_look_at_this
 
 import android.app.Activity
 import android.text.Editable

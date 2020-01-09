@@ -57,8 +57,11 @@ interface LogEntryDao {
     @Query("SELECT * FROM log_entries")
     fun getAll(): LiveData<List<LogEntry>>
 
-    @Query("SELECT * FROM log_entries WHERE id IN (:userIds)")
-    fun loadAllByIds(userIds: Array<String>): LiveData<List<LogEntry>>
+    @Query("SELECT * FROM log_entries WHERE id=:logId")
+    fun getById(logId: String): LiveData<LogEntry>
+
+    @Query("SELECT * FROM log_entries WHERE id IN (:logIds)")
+    fun loadAllByIds(logIds: Array<String>): LiveData<List<LogEntry>>
 
     /**
      * @param start use [DateTime.toString] with [DATETIME_SERIALIZATION_STRING]

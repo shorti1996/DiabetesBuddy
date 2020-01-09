@@ -25,7 +25,7 @@ class DbModule(val context: Context) {
     @Singleton
     @Provides
     fun provideLogEntryDao(appDatabase: AppDatabase): LogEntryDao {
-        return appDatabase.userDao()
+        return appDatabase.logEntryDao()
     }
 
     @Singleton

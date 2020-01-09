@@ -7,12 +7,10 @@ import com.wojciszke.diabetesbuddy.adding.AddingLogActivity
 import com.wojciszke.diabetesbuddy.boiler.inTransaction
 import com.wojciszke.diabetesbuddy.logs.LogsFragment
 import com.wojciszke.diabetesbuddy.main.HomeFragment
-import com.wojciszke.diabetesbuddy.model.LogEntry
 import com.wojciszke.diabetesbuddy.phototaking.PhotoTakingActivity
 import com.wojciszke.diabetesbuddy.stats.StatsFragment
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fabs_leyout.*
-import org.joda.time.DateTime
 
 class MainActivity : AppCompatActivity() {
 
@@ -24,17 +22,6 @@ class MainActivity : AppCompatActivity() {
 
         fab_add.setOnClickListener { startActivity(Intent(this, AddingLogActivity::class.java)) }
         fab_photo.setOnClickListener { startActivity(Intent(this, PhotoTakingActivity::class.java)) }
-
-//        CoroutineScope(Dispatchers.IO).launch {
-//            val db = (application as DiabetesApp).db
-//            db.clearAllTables()
-//            with(db.userDao()) {
-//                insertAll(*dataset.toTypedArray())
-//                getAll().forEach {
-//                    Log.d("debug-db", it.toString())
-//                }
-//            }
-//        }
     }
 
     private fun prepareBottomNav() {
@@ -51,7 +38,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun showHome() {
         val fragment = supportFragmentManager.findFragmentByTag(HomeFragment.TAG)
-                ?: HomeFragment.newInstance("", "")
+                ?: HomeFragment.newInstance()
         supportFragmentManager.inTransaction {
             replace(R.id.main_root, fragment, HomeFragment.TAG)
         }
@@ -71,16 +58,6 @@ class MainActivity : AppCompatActivity() {
         supportFragmentManager.inTransaction {
             replace(R.id.main_root, fragment, StatsFragment.TAG)
         }
-    }
-
-    companion object {
-        val dataset = listOf(
-                LogEntry(80, DateTime.now(), false, "Notatka"),
-                LogEntry(142, DateTime.now().minusMinutes(10), true, ""),
-                LogEntry(181, DateTime.now().minusDays(1).minusMinutes(21), true, "Notatka 123"),
-                LogEntry(164, DateTime.now().minusDays(1).minusHours(2).minusMinutes(38), false, "Test"),
-                LogEntry(94, DateTime.now().minusDays(2).minusHours(8).minusMinutes(23), false, "Test 2")
-        )
     }
 }
 

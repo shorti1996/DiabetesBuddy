@@ -13,15 +13,15 @@ import kotlinx.android.synthetic.main.log_entry_vh.view.*
 import org.joda.time.format.DateTimeFormat
 import java.util.*
 
-class LogsAdapter(dataSet: List<LogEntry>) : RecyclerView.Adapter<LogsAdapter.LogsViewHolder>() {
-    var dataSet = dataSet
+class LogsAdapter(val onItemClick: (LogEntry) -> Unit) : RecyclerView.Adapter<LogsAdapter.LogsViewHolder>() {
+    var dataSet = listOf<LogEntry>()
         set(value) {
             field = value
             notifyDataSetChanged()
         }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LogsViewHolder =
-        LogsViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.log_entry_vh, parent, false))
+            LogsViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.log_entry_vh, parent, false))
 
     override fun getItemCount(): Int = dataSet.size
 
@@ -36,6 +36,7 @@ class LogsAdapter(dataSet: List<LogEntry>) : RecyclerView.Adapter<LogsAdapter.Lo
             measurement_separator.setBackgroundColor(color)
 //            log_card.setCardBackgroundColor(ColorUtils.setAlphaComponent(color, context.resources.getInteger(R.integer.card_log_background_alpha)))
         }
+        holder.itemView.setOnClickListener { onItemClick(item) }
         Unit
     }
 

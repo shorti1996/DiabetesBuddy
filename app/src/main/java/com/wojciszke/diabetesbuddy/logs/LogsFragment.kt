@@ -1,7 +1,7 @@
 package com.wojciszke.diabetesbuddy.logs
 
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,27 +11,21 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.wojciszke.diabetesbuddy.DiabetesApp
-import com.wojciszke.diabetesbuddy.MainActivity
 import com.wojciszke.diabetesbuddy.R
+import com.wojciszke.diabetesbuddy.adding.AddingLogActivity
 import com.wojciszke.diabetesbuddy.boiler.observe
 import com.wojciszke.diabetesbuddy.di.component.DaggerLogsEntryComponent
+import com.wojciszke.diabetesbuddy.model.LogEntry
 import kotlinx.android.synthetic.main.fragment_logs.*
 import javax.inject.Inject
 
-
-/*// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"*/
 
 class LogsFragment : Fragment() {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val logsViewModel by lazy { ViewModelProviders.of(this, viewModelFactory)[LogsViewModel::class.java] }
 
-/*    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null*/
+    private val logsAdapter by lazy { LogsAdapter { logItem -> startEditForLogItem(logItem) } }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,11 +35,6 @@ class LogsFragment : Fragment() {
                 .appComponent((activity!!.application as DiabetesApp).appComponent)
                 .build()
                 .inject(this)
-
-/*        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }*/
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
@@ -54,31 +43,23 @@ class LogsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         prepareLogsRecyclerView(logs_rv)
-        logsViewModel.allLogs.observe(this) {
-            it.forEach { logEntry -> Log.d(TAG, "allLogs: $logEntry") }
-        }
+        logsViewModel.allLogs.observe(this) { logsAdapter.dataSet = it }
     }
 
     private fun prepareLogsRecyclerView(logsRecyclerView: RecyclerView) = logsRecyclerView.apply {
         setHasFixedSize(true)
         layoutManager = LinearLayoutManager(this@LogsFragment.requireContext())
-        adapter = LogsAdapter(MainActivity.dataset)
+        adapter = logsAdapter
+    }
+
+    private fun startEditForLogItem(logItem: LogEntry) {
+        startActivity(Intent(this@LogsFragment.context, AddingLogActivity::class.java).apply { putExtra(AddingLogActivity.EXTRA_LOG_ID, logItem.id) })
     }
 
     companion object {
-
         const val TAG = "logs_fragment"
 
-        // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(/*param1: String, param2: String*/) =
-                LogsFragment().apply {
-                    /*
-                                    arguments = Bundle().apply {
-                                        putString(ARG_PARAM1, param1)
-                                        putString(ARG_PARAM2, param2)
-                                    }
-                    */
-                }
+        fun newInstance() = LogsFragment()
     }
 }

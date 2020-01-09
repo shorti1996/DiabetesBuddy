@@ -1,55 +1,49 @@
 package com.wojciszke.diabetesbuddy.adding
 
 import android.os.Bundle
-import android.text.TextWatcher
-import android.view.MotionEvent
-import android.widget.EditText
-import android.widget.NumberPicker
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
+import com.wojciszke.diabetesbuddy.DiabetesApp
 import com.wojciszke.diabetesbuddy.R
+import com.wojciszke.diabetesbuddy.adding.if_you_are_recruiter_dont_look_at_this.ThreePickersHack
+import com.wojciszke.diabetesbuddy.boiler.observe
+import com.wojciszke.diabetesbuddy.di.component.DaggerLogsEntryComponent
+import com.wojciszke.diabetesbuddy.logs.LogsViewModel
 import kotlinx.android.synthetic.main.activity_adding_log.*
+import javax.inject.Inject
 
 class AddingLogActivity : AppCompatActivity() {
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    private val logsViewModel by lazy { ViewModelProviders.of(this, viewModelFactory)[LogsViewModel::class.java] }
+
+    private val threePickersHack by lazy { ThreePickersHack(add_log_number_picker1, add_log_number_picker2, add_log_number_picker3) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_adding_log)
+        DaggerLogsEntryComponent
+                .builder()
+                .appComponent((application as DiabetesApp).appComponent)
+                .build()
+                .inject(this)
 
-        prepareNumberPickers()
+        threePickersHack.prepareNumberPickers()
+
+        if (intent.extras?.containsKey(EXTRA_LOG_ID) == true) {
+            logsViewModel.singleLog().observe(this) { logEntry ->
+                if (logEntry != null) {
+                    threePickersHack.setGlucoseOnPickers(logEntry.glucose)
+                }
+            }
+            logsViewModel.setSingleLogId(intent.extras?.getString(EXTRA_LOG_ID)!!)
+        }
     }
 
-    private fun prepareNumberPickers() {
-        listOf(add_log_number_picker1, add_log_number_picker2, add_log_number_picker3).forEach {
-            it.apply {
-                minValue = 0
-                maxValue = 9
-            }
-        }
-        val textWatcher1to2 = NumberPickerHacks.focusNextOnInputTextWatcher(add_log_number_picker1, add_log_number_picker2)
-        val textWatcher2to3 = NumberPickerHacks.focusNextOnInputTextWatcher(add_log_number_picker2, add_log_number_picker3)
-        val textWatcher3toHide = NumberPickerHacks.focusNextOnInputTextWatcher(add_log_number_picker3, null)
-
-        val logInput1 = NumberPickerHacks.findInput(add_log_number_picker1)
-        val logInput2 = NumberPickerHacks.findInput(add_log_number_picker2)
-        val logInput3 = NumberPickerHacks.findInput(add_log_number_picker3)
-
-        logInput1?.addTextChangedListener(textWatcher1to2)
-        logInput2?.addTextChangedListener(textWatcher2to3)
-        logInput3?.addTextChangedListener(textWatcher3toHide)
-
-        disableTextWatcherOnTouch(add_log_number_picker1, logInput1, textWatcher1to2)
-        disableTextWatcherOnTouch(add_log_number_picker2, logInput2, textWatcher2to3)
-        disableTextWatcherOnTouch(add_log_number_picker3, logInput3, textWatcher3toHide)
-    }
-
-    private fun disableTextWatcherOnTouch(numberPicker: NumberPicker, logInput1: EditText?, textWatcher1to2: TextWatcher) {
-        numberPicker.setOnTouchListener { _, event ->
-            when (event!!.action) {
-                MotionEvent.ACTION_DOWN -> logInput1?.removeTextChangedListener(textWatcher1to2)
-                MotionEvent.ACTION_UP -> logInput1?.addTextChangedListener(textWatcher1to2)
-            }
-            false
-        }
+    companion object {
+        const val EXTRA_LOG_ID = "extra-log-id"
     }
 
 }

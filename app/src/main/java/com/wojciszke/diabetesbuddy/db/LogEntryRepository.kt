@@ -11,6 +11,8 @@ import javax.inject.Singleton
 class LogEntryRepository @Inject constructor(private val logEntryDao: LogEntryDao) {
     fun getAll(): LiveData<List<LogEntry>> = logEntryDao.getAll()
 
+    fun getById(logId: String): LiveData<LogEntry> = logEntryDao.getById(logId)
+
     fun loadAllByIds(userIds: Array<String>): LiveData<List<LogEntry>> = logEntryDao.loadAllByIds(userIds)
 
     fun findBetween(start: DateTime, end: DateTime): LiveData<LogEntry> =
